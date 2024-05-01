@@ -62,6 +62,7 @@ def obtener_chofer(rut_chofer):
     try:
         # Buscar el chofer por su Rut
         chofer = Chofer.objects.get(rut=rut_chofer)
+        print(f"Chofer encontrado: {chofer.nombre} {chofer.apellido}")
         return chofer
     except Chofer.DoesNotExist:
         print("No se encontró ningún chofer con ese Rut.")
@@ -110,6 +111,7 @@ def obtener_vehiculo(patente):
     try:
         # Buscar el vehículo por su patente
         vehiculo = Vehiculo.objects.get(patente=patente)
+        print(f"Vehículo encontrado: {vehiculo}")
         return vehiculo
     except Vehiculo.DoesNotExist:
         print("No se encontró ningún vehículo activo con esa patente.")
@@ -155,7 +157,7 @@ def habilitar_vehiculo(vehiculo):
 def asignar_chofer_a_vehiculo(chofer, vehiculo):
     try:
         # Verificar si el vehículo ya tiene un chofer asignado
-        if vehiculo.chofer:
+        if chofer.vehiculo:
             print("El vehículo ya tiene un chofer asignado.")
             return None
         
