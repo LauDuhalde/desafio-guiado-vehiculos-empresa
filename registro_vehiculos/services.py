@@ -155,9 +155,9 @@ def habilitar_vehiculo(vehiculo):
 def asignar_chofer_a_vehiculo(chofer, vehiculo):
     try:
         # Verificar si el vehículo ya tiene un chofer asignado
-        #if vehiculo.chofer:
-         #   print("El vehículo ya tiene un chofer asignado.")
-           # return None
+        if vehiculo.chofer:
+            print("El vehículo ya tiene un chofer asignado.")
+            return None
         
         # Asignar el chofer al vehículo
         #chofer.vehiculo=vehiculo
@@ -182,6 +182,26 @@ def imprimir_datos_vehiculos():
 def eliminar_vehiculo(patente):
     try:
         vehiculo = Vehiculo.objects.get(patente=patente)
+        
+        # Verificar si hay registros asociados al vehículo
+        if Chofer.objects.filter(vehiculo=vehiculo).exists() or RegistroContabilidad.objects.filter(vehiculo=vehiculo).exists():
+            respuesta = input("Hay registros asociados a este vehículo. ¿Desea eliminarlos también? (s/n): ")
+            if respuesta.lower() == 's':
+                # Eliminar chofer asociado
+                if Chofer.objects.filter(vehiculo=vehiculo).exists():
+                    chofer = Chofer.objects.get(vehiculo=vehiculo)
+                    eliminar_chofer(chofer.rut)
+                
+                # Eliminar registro contable asociado
+                if RegistroContabilidad.objects.filter(vehiculo=vehiculo).exists():
+                    registro_contabilidad = RegistroContabilidad.objects.get(vehiculo=vehiculo)
+                    eliminar_registro_contabilidad(registro_contabilidad)
+                print("Registros asociados eliminados correctamente.")
+            else:
+                print("No se eliminaron los registros asociados.")
+                return
+        
+        # Si no hay choferes asociados, podemos eliminar el vehículo directamente
         vehiculo.delete()
         print("Vehículo eliminado correctamente.")
     except Vehiculo.DoesNotExist:
